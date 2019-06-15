@@ -11,12 +11,12 @@ namespace Framework\Model\MongoDb;
 
 use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\Regex;
+use MongoDB\Driver\BulkWrite;
+use MongoDB\Driver\Command;
 use MongoDB\Driver\Exception\BulkWriteException;
 use MongoDB\Driver\Manager;
-use MongoDB\Driver\BulkWrite;
-use MongoDB\Driver\WriteConcern;
 use MongoDB\Driver\Query;
-use MongoDB\Driver\Command;
+use MongoDB\Driver\WriteConcern;
 
 class MongoDb
 {
@@ -84,6 +84,13 @@ class MongoDb
         return $this->mongodb;
     }
 
+    /**
+     * @description: 设置表名
+     *
+     * @param $table
+     * @return $this
+     * @date 2019-06-15
+     */
     public function table($table)
     {
         $this->table = $table;
@@ -136,6 +143,18 @@ class MongoDb
     }
 
     /**
+     * @description: 设置or条件
+     *
+     * @param array $where
+     * @return MongoDb
+     * @date 2019-06-15
+     */
+    public function whereOr(array $where)
+    {
+        return $this->where(['$or' => $where]);
+    }
+
+    /**
      * @description: 正则条件
      *
      * @param $key
@@ -154,36 +173,36 @@ class MongoDb
      * @description: 排序
      *
      * @param array|string $column
-     * @param int $sortType
+     * @param int $orderType
      * @return $this
      * @date 2019-06-15
      */
-    public function sort($column, $sortType = self::ASC)
+    public function order($column, $orderType = self::ASC)
     {
-        $sortArray = [];
+        $orderArray = [];
         if (is_array($column)) {
             foreach ($column as $key => $value) {
                 if (self::ASC != $value) {
                     $value = self::DESC;
                 }
-                $sortArray[$key] = $value;
+                $orderArray[$key] = $value;
             }
         }
 
         if (is_string($column)) {
-            if (self::ASC != $sortType) {
-                $sortType = self::DESC;
+            if (self::ASC != $orderType) {
+                $orderType = self::DESC;
             }
 
-            $sortArray = [$column => $sortType];
+            $orderArray = [$column => $orderType];
         }
 
 
-        if (!empty($sortArray)) {
+        if (!empty($orderArray)) {
             if (isset($this->options['sort'])) {
-                $this->options['sort'] = array_merge($this->options['sort'], $sortArray);
+                $this->options['sort'] = array_merge($this->options['sort'], $orderArray);
             } else {
-                $this->options['sort'] = $sortArray;
+                $this->options['sort'] = $orderArray;
             }
         }
 
