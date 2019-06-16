@@ -88,7 +88,7 @@ class MongoDb
      * @description: 设置表名
      *
      * @param $table
-     * @return $this
+     * @return MongoDb
      * @date 2019-06-15
      */
     public function table($table)
@@ -124,7 +124,7 @@ class MongoDb
      *
      * @param string|array $where
      * @param string|null $value
-     * @return $this
+     * @return MongoDb
      * @date 2019-06-15
      */
     public function where($where, $value = null)
@@ -151,7 +151,7 @@ class MongoDb
      */
     public function whereOr(array $where)
     {
-        return $this->where(['$or' => $where]);
+        return $this->where('$or', $where);
     }
 
     /**
@@ -159,14 +159,12 @@ class MongoDb
      *
      * @param $key
      * @param $value
-     * @return $this
+     * @return MongoDb
      * @date 2019-06-15
      */
     public function whereRegx($key, $value)
     {
-        $this->wheres[$key] = new Regex($value);
-
-        return $this;
+        return $this->where($key, new Regex($value));
     }
 
     /**
@@ -174,7 +172,7 @@ class MongoDb
      *
      * @param array|string $column
      * @param int $orderType
-     * @return $this
+     * @return MongoDb
      * @date 2019-06-15
      */
     public function order($column, $orderType = self::ASC)
@@ -213,7 +211,7 @@ class MongoDb
      * @description: 限制
      *
      * @param $num
-     * @return $this
+     * @return MongoDb
      * @date 2019-06-15
      */
     public function limit($num)
@@ -227,7 +225,7 @@ class MongoDb
      * @description: 偏移
      *
      * @param $num
-     * @return $this
+     * @return MongoDb
      * @date 2019-06-15
      */
     public function offset($num)
@@ -241,7 +239,7 @@ class MongoDb
      * @description: 查询指定字段
      *
      * @param array $fields
-     * @return $this
+     * @return MongoDb
      * @date 2019-06-15
      */
     public function field(array $fields)
